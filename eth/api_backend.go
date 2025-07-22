@@ -681,13 +681,16 @@ func (b *EthAPIBackend) SimulateTransactionWithSSVTrace(ctx context.Context, tx 
 	mailboxAddresses := b.GetMailboxAddresses()
 	tracer := native.NewSSVTracer(mailboxAddresses)
 
-	vmConfig := *b.eth.blockchain.GetVMConfig()
+	vmConfig := vm.Config{}
+	if b.eth.blockchain.GetVMConfig() != nil {
+		vmConfig = *b.eth.blockchain.GetVMConfig()
+	}
 	vmConfig.Tracer = tracer.Hooks()
 
 	blockContext := core.NewEVMBlockContext(header, b.eth.blockchain, nil, b.ChainConfig(), stateDB)
 	evm := vm.NewEVM(blockContext, stateDB, b.ChainConfig(), vmConfig)
 
-	result, err := core.ApplyMessage(evm, msg, new(core.GasPool).AddGas(msg.GasLimit))
+	result, err := core.ApplyMessage(evm, msg, new(core.GasPool).AddGas(header.GasLimit))
 	if err != nil {
 		return nil, err
 	}
