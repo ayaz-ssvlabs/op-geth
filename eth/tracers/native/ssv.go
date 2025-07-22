@@ -173,17 +173,15 @@ func (t *SSVTracer) GetResult() (json.RawMessage, error) {
 
 /////////// Public API for creating a new SSVTracer instance ///////////
 
-func NewSSVTracer() *SSVTracer {
-	// TODO: Replace with actual watched addresses
-	mockAddr1 := common.HexToAddress("0x1234567890123456789012345678901234567890")
-	mockAddr2 := common.HexToAddress("0xabcdefabcdefabcdefabcdefabcdefabcdefabcd")
+func NewSSVTracer(mailboxAddresses []common.Address) *SSVTracer {
+	watchedAddresses := make(map[common.Address]bool)
+	for _, addr := range mailboxAddresses {
+		watchedAddresses[addr] = true
+	}
 
 	return &SSVTracer{
-		operations: make([]ssv.SSVOperation, 0),
-		watchedAddresses: map[common.Address]bool{
-			mockAddr1: true,
-			mockAddr2: true,
-		},
+		operations:       make([]ssv.SSVOperation, 0),
+		watchedAddresses: watchedAddresses,
 	}
 }
 

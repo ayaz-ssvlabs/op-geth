@@ -678,7 +678,8 @@ func (b *EthAPIBackend) SimulateTransactionWithSSVTrace(ctx context.Context, tx 
 		return nil, err
 	}
 
-	tracer := native.NewSSVTracer()
+	mailboxAddresses := b.GetMailboxAddresses()
+	tracer := native.NewSSVTracer(mailboxAddresses)
 
 	vmConfig := *b.eth.blockchain.GetVMConfig()
 	vmConfig.Tracer = tracer.Hooks()
@@ -695,4 +696,9 @@ func (b *EthAPIBackend) SimulateTransactionWithSSVTrace(ctx context.Context, tx 
 	traceResult.ExecutionResult = result
 
 	return traceResult, nil
+}
+
+// GetMailboxAddresses returns the list of mailbox contract addresses to watch.
+func (b *EthAPIBackend) GetMailboxAddresses() []common.Address {
+	return b.eth.mailboxAddresses
 }
