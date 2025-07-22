@@ -19,9 +19,11 @@ package ethapi
 
 import (
 	"context"
-	"github.com/ethereum/go-ethereum/internal/xt"
+	"github.com/ethereum/go-ethereum/core/ssv"
 	"math/big"
 	"time"
+
+	"github.com/ethereum/go-ethereum/internal/xt"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts"
@@ -93,6 +95,7 @@ type Backend interface {
 
 	// Shared publisher API
 	HandleSPMessage(ctx context.Context, from string, msg *xt.Message) ([]common.Hash, error)
+	SimulateTransactionWithSSVTrace(ctx context.Context, tx *types.Transaction, blockNrOrHash rpc.BlockNumberOrHash) (*ssv.SSVTraceResult, error)
 	//ForwardXTxs(ctx context.Context, xTxs []*xt.TransactionRequest) error
 
 	// This is copied from filters.Backend
